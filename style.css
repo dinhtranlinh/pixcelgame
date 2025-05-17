@@ -1,0 +1,64 @@
+/* Tổng thể */
+body {
+    background-color: #0e1a3c;
+    color: #c0d3f7;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 1rem;
+    user-select: none;
+  }
+  
+  .container {
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  h1 {
+    margin-bottom: 10px;
+    color: #9ba9f7;
+    text-shadow: 1px 1px 2px #2e3a83;
+  }
+  
+  #user-info {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #d4dbff;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  
+  .box {
+    background-color: #2e3a83;
+    border: 3px solid #5665cc;
+    border-radius: 8px;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 0 5px #4156bb;
+  }
+  
+  .box.opened {
+    background-color: #8a8cff;
+    cursor: default;
+    box-shadow: 0 0 15px #a5a5ff;
+  }
+  
+  .reward {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    min-height: 40px;
+    color: #e2e8ff;
+    text-shadow: 1px 1px 3px #4a5adb;
+    min-height: 40px;
+  }
+  
