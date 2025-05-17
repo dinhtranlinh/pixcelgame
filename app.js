@@ -8,6 +8,9 @@ const boxes = document.querySelectorAll('.box');
 const openedBoxes = new Set();
 
 const API_BASE = "http://103.207.37.231:8888/"; // Thay bằng địa chỉ backend của bạn
+const depositInput = document.getElementById("depositAmount");
+const depositBtn = document.getElementById("btnDeposit");
+const depositMsg = document.getElementById("depositMessage");
 
 // Lấy user info từ Telegram Web App
 const userId = tg.initDataUnsafe?.user?.id || null;
@@ -70,4 +73,28 @@ async function openBox(index, boxElement) {
 boxes.forEach((box) => {
   const index = box.getAttribute("data-index");
   box.addEventListener("click", () => openBox(index, box));
+});
+depositBtn.addEventListener("click", async () => {
+  const amount = parseInt(depositInput.value);
+  if (isNaN(amount) || amount <= 0) {
+    depositMsg.textContent = "Vui lòng nhập số coin hợp lệ (>0).";
+    return;
+  }
+  depositMsg.textContent = "Đang xử lý...";
+
+  try {
+    const res = await fetch(`${API_BASE}/deposit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ telegram_id: userId, amount })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Lỗi khi nạp coin");
+
+    depositMsg.textContent = data.message;
+    balanceInfo.textContent = `Số dư coin: ${data.new_balance}`;
+    depositInput.value = "";
+  } catch (e) {
+    depositMsg.textContent = `Lỗi: ${e.message}`;
+  }
 });
