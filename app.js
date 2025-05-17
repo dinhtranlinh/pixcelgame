@@ -7,7 +7,7 @@ const rewardBox = document.getElementById('reward');
 const boxes = document.querySelectorAll('.box');
 const openedBoxes = new Set();
 
-const API_BASE = "http://103.207.37.231:8888/"; // Thay bằng địa chỉ backend của bạn
+const API_BASE = "https://pixel.clbketnoitinhyeuonline.com"; // Thay bằng địa chỉ backend của bạn
 const depositInput = document.getElementById("depositAmount");
 const depositBtn = document.getElementById("btnDeposit");
 const depositMsg = document.getElementById("depositMessage");
