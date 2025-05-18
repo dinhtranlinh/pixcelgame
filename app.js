@@ -152,3 +152,15 @@ function toggleWithdrawForm() {
   const section = document.getElementById("withdraw-section");
   section.style.display = section.style.display === "none" ? "block" : "none";
 }
+// Giao diện người dùng (bổ sung đoạn này vào dưới thẻ rút)
+document.getElementById("withdrawAmount").addEventListener("input", () => {
+  const amount = parseInt(document.getElementById("withdrawAmount").value);
+  const previewEl = document.getElementById("withdrawPreview");
+  if (!isNaN(amount) && amount > 0) {
+    const fee = Math.max(1, Math.floor(amount * 0.01));
+    const receive = amount - fee;
+    previewEl.textContent = `Sẽ nhận được: ${receive} PIXEL (đã trừ ${fee} phí)`;
+  } else {
+    previewEl.textContent = "";
+  }
+});
