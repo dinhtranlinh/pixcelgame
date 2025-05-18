@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,20 +7,41 @@
   <link rel="stylesheet" href="style.css" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-
 <body>
   <div class="container">
     <h1>Pixel Mystery Box</h1>
     <p id="user-info">Đang tải thông tin người chơi...</p>
     <p id="balance-info">Đang tải số dư coin...</p>
-    <hr>
-    <h2>Nạp coin qua chuyển PIXEL</h2>
-    <p>Chuyển PIXEL đến ví: <strong id="wallet-address">0x75De1eb4c437afE3fCfd162F25c48Ad4D17C9948</strong></p>
-    <input type="text" id="txHashInput" placeholder="Nhập mã giao dịch (HashTX)" style="width:100%; padding:8px;">
-    <button id="submitHashBtn">Xác nhận nạp</button>
-    <p id="hashMessage"></p>
+
+    <div id="action-buttons" style="margin: 10px 0; text-align: center;">
+      <button onclick="toggleDepositForm()">Nạp PIXEL</button>
+      <button onclick="toggleWithdrawForm()">Rút Coin</button>
+    </div>
+
+    <!-- NẠP PIXEL -->
+    <div id="deposit-section" style="display:none;">
+      <h2>Nạp PIXEL để chơi</h2>
+      <p>Gửi PIXEL đến ví:</p>
+      <div style="display: flex; align-items: center; justify-content: center;">
+        <input id="wallet-address" value="0x75De1eb4c437afE3fCfd162F25c48Ad4D17C9948" readonly style="width: 80%; padding: 4px;">
+        <button onclick="copyWallet()" style="margin-left: 6px;">📋</button>
+      </div>
+      <input type="text" id="txHashInput" placeholder="Nhập mã giao dịch (HashTX)" style="width:100%; padding:8px; margin-top: 8px;">
+      <button id="submitHashBtn">Xác nhận nạp</button>
+      <p id="hashMessage"></p>
+    </div>
+
+    <!-- RÚT COIN -->
+    <div id="withdraw-section" style="display:none;">
+      <h2>Rút Coin</h2>
+      <input type="text" id="withdrawAddress" placeholder="Nhập địa chỉ ví nhận" style="width:100%; padding:8px; margin-bottom: 8px;">
+      <input type="number" id="withdrawAmount" placeholder="Số coin muốn rút" style="width:100%; padding:8px;">
+      <button id="submitWithdrawBtn">Xác nhận rút</button>
+      <p id="withdrawMessage"></p>
+    </div>
+
+    <!-- Hộp -->
     <div class="grid">
-      <!-- 9 ô -->
       <div class="box" data-index="0"></div>
       <div class="box" data-index="1"></div>
       <div class="box" data-index="2"></div>
@@ -37,5 +57,4 @@
 
   <script src="app.js"></script>
 </body>
-
 </html>
