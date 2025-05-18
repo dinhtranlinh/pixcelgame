@@ -128,7 +128,7 @@ document.getElementById("submitWithdrawBtn").addEventListener("click", async () 
     const res = await fetch(`${API_BASE}/withdraw`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ telegram_id: userId, amount })
+      body: JSON.stringify({ telegram_id: userId, amount, wallet_address: address })
     });
 
     const data = await res.json();
@@ -157,8 +157,8 @@ document.getElementById("withdrawAmount").addEventListener("input", () => {
   const amount = parseInt(document.getElementById("withdrawAmount").value);
   const previewEl = document.getElementById("withdrawPreview");
   if (!isNaN(amount) && amount > 0) {
-    const fee = Math.max(1, Math.floor(amount * 0.01));
-    const receive = amount - fee;
+    const fee = +(amount * 0.01).toFixed(6);
+    const receive = +(amount - fee).toFixed(6);
     previewEl.textContent = `Sẽ nhận được: ${receive} PIXEL (đã trừ ${fee} phí)`;
   } else {
     previewEl.textContent = "";
