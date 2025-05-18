@@ -146,23 +146,22 @@ function toggleDepositForm() {
   const depositSection = document.getElementById("deposit-section");
   const withdrawSection = document.getElementById("withdraw-section");
 
-  // Ẩn form rút nếu đang mở
   withdrawSection.style.display = "none";
 
-  // Toggle form nạp
-  depositSection.style.display = depositSection.style.display === "none" ? "block" : "none";
+  const isHidden = window.getComputedStyle(depositSection).display === "none";
+  depositSection.style.display = isHidden ? "block" : "none";
 }
 
 function toggleWithdrawForm() {
   const withdrawSection = document.getElementById("withdraw-section");
   const depositSection = document.getElementById("deposit-section");
 
-  // Ẩn form nạp nếu đang mở
   depositSection.style.display = "none";
 
-  // Toggle form rút
-  withdrawSection.style.display = withdrawSection.style.display === "none" ? "block" : "none";
+  const isHidden = window.getComputedStyle(withdrawSection).display === "none";
+  withdrawSection.style.display = isHidden ? "block" : "none";
 }
+
 
 // Giao diện người dùng (bổ sung đoạn này vào dưới thẻ rút)
 document.getElementById("withdrawAmount").addEventListener("input", () => {
