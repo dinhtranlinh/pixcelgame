@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,18 +8,18 @@
   <link rel="stylesheet" href="style.css" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
+
 <body>
   <div class="container">
     <h1>Pixel Mystery Box</h1>
     <p id="user-info">Đang tải thông tin người chơi...</p>
     <p id="balance-info">Đang tải số dư coin...</p>
-    <div>
-  <h3>Nạp Pixel Coin</h3>
-  <input type="number" id="depositAmount" placeholder="Nhập số coin nạp" min="1" />
-  <button id="btnDeposit">Nạp coin</button>
-  <p id="depositMessage"></p>
-</div>
-
+    <hr>
+    <h2>Nạp coin qua chuyển PIXEL</h2>
+    <p>Chuyển PIXEL đến ví: <strong id="wallet-address">0x75De1eb4c437afE3fCfd162F25c48Ad4D17C9948</strong></p>
+    <input type="text" id="txHashInput" placeholder="Nhập mã giao dịch (HashTX)" style="width:100%; padding:8px;">
+    <button id="submitHashBtn">Xác nhận nạp</button>
+    <p id="hashMessage"></p>
     <div class="grid">
       <!-- 9 ô -->
       <div class="box" data-index="0"></div>
@@ -36,4 +37,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>
