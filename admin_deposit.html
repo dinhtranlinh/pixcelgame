@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Nạp Coin Test</title>
+  <style>
+    body { font-family: 'Inter',sans-serif; background:#111e36; color:#fff; padding:40px }
+    .panel { background:#232b47; border-radius:12px; padding:32px 24px; max-width:360px; margin:0 auto }
+    h2 { color: #ffef70; text-align:center; }
+    label { display:block; margin-top:18px; }
+    input[type="text"], input[type="number"] {
+      width:100%; padding:10px; margin:8px 0; border-radius:7px; border:1px solid #3a4a73;
+      background: #182345; color:#fff; font-size:15px; box-sizing:border-box;
+    }
+    button { margin-top:18px; width:100%; padding:12px; background:#3c5be8; color:#fff; font-weight:600;
+      border:none; border-radius:8px; font-size:16px; cursor:pointer; }
+    button:hover { background:#5f77f7; }
+    #result { margin-top:20px; text-align:center; color: #ffef70; }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h2>Admin Nạp Coin Test</h2>
+    <label>Telegram ID</label>
+    <input type="text" id="tgid" placeholder="Nhập Telegram ID">
+    <label>Số coin muốn nạp</label>
+    <input type="number" id="amount" value="100" min="1">
+    <button onclick="deposit()">Nạp ngay</button>
+    <div id="result"></div>
+  </div>
+  <script>
+    const API_BASE = "https://pixel.clbketnoitinhyeuonline.com"; // Đổi thành API thật của bạn nếu khác
+    function deposit() {
+      let tgid = document.getElementById('tgid').value.trim();
+      let amount = parseInt(document.getElementById('amount').value);
+      if (!tgid || isNaN(amount) || amount <= 0) {
+        document.getElementById('result').textContent = 'Vui lòng nhập đúng Telegram ID và số coin.';
+        return;
+      }
+      fetch(API_BASE + "/deposit", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({telegram_id: Number(tgid), amount: amount})
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.new_balance !== undefined) {
+          document.getElementById('result').textContent =
+            "✅ Đã nạp thành công! Số dư mới: " + data.new_balance;
+        } else {
+          document.getElementById('result').textContent = "❌ " + (data.detail || JSON.stringify(data));
+        }
+      })
+      .catch(err => {
+        document.getElementById('result').textContent = "Lỗi: " + err;
+      });
+    }
+  </script>
+</body>
+</html>
