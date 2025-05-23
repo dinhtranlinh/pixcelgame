@@ -56,7 +56,7 @@
       <h3 style="font-weight: 600; font-size: 18px;">Deposit PIXEL</h3>
       <img src="qr-code.jpg" alt="QR Code" class="qr" />
       <div class="wallet-address-wrapper">
-        <div class="wallet-label">Your Address</div>
+        <div class="wallet-label">Địa chỉ ví nạp</div>
         <div id="wallet-address">0x75De1eb4c437afE3fCfd162F25c48Ad4D17C9948</div>
       </div>
       <button onclick="copyAddress()" class="highlight-button">Copy Address</button>
@@ -68,8 +68,8 @@
   <div id="send-modal" class="modal">
     <div class="modal-content">
       <h3 style="font-weight: 600; font-size: 18px;">Send PIXEL</h3>
-      <input type="text" id="send-address" class="input-ronin" placeholder="Recipient Address" />
-      <input type="number" id="send-amount" class="input-ronin" placeholder="Amount" />
+      <input type="text" id="send-address" class="input-ronin" placeholder="Địa chỉ ví rút" />
+      <input type="number" id="send-amount" class="input-ronin" placeholder="Số coin rút" />
       <button onclick="sendCoin()" class="highlight-button">Send</button>
       <button class="close-btn" onclick="closeModal('send-modal')">Close</button>
     </div>
