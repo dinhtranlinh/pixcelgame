@@ -30,27 +30,7 @@ async function updateBalance() {
 }
 updateBalance();
 
-async function openBox(index, boxElement) {
-  if (openedBoxes.has(index)) return;
-  try {
-    const res = await fetch(`${API_BASE}/open_box`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ telegram_id: user.id, amount: 10 })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      rewardBox.textContent = `Lỗi: ${data.detail}`;
-      return;
-    }
-    openedBoxes.add(index);
-    boxElement.classList.add("opened");
-    rewardBox.textContent = data.message;
-    balanceDisplay.textContent = `$${data.new_balance.toFixed(2)}`;
-  } catch (e) {
-    rewardBox.textContent = "Lỗi kết nối backend.";
-  }
-}
+
 boxes.forEach((box) => {
   const index = box.getAttribute("data-index");
   box.addEventListener("click", () => openBox(index, box));

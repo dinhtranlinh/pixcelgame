@@ -23,10 +23,22 @@ function updateTimer() {
 
   timeLeft--;
   if (timeLeft < 0) {
-    clearInterval(countdownInterval);
-    timerEl.textContent = "⏳ Đang xử lý...";
-    // TODO: Gọi API trả thưởng
-  }
+  clearInterval(countdownInterval);
+  timerEl.textContent = "⏳ Đang xử lý...";
+  setTimeout(() => {
+    fetchWinnersAndShow();
+    // Reset giao diện cho phiên mới
+    boxes.forEach(box => box.querySelector(".dots").innerHTML = "");
+    totalPixel = 0;
+    totalBetEl.textContent = "0";
+    pixelPlaced = {};
+    if (typeof updateBalance === "function") updateBalance();
+    // Reset lại timer cho phiên tiếp theo:
+    timeLeft = 300;
+    countdownInterval = setInterval(updateTimer, 1000);
+  }, 2500);
+}
+
 }
 const countdownInterval = setInterval(updateTimer, 1000);
 
