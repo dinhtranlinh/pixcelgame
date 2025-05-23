@@ -235,3 +235,38 @@ body {
   from { transform: scale(1); opacity: 1; }
   to { transform: scale(1.2); opacity: 0.6; }
 }
+#winner-modal .modal-content {
+  border: 3px solid #ffe082;
+  box-shadow: 0 0 32px #fff3cd;
+}
+#winner-info {
+  font-size: 1.2rem;
+  margin: 18px 0 12px 0;
+  color: #e65100;
+  word-break: break-word;
+}
+#winner-modal .modal-content {
+  border: 3px solid #ffe082;
+  box-shadow: 0 0 32px #fff3cd;
+}
+#winner-list {
+  font-size: 1.1rem;
+  margin: 18px 0 12px 0;
+  color: #1a263b;
+  word-break: break-word;
+}
+.winner-item {
+  padding: 8px 0;
+  font-weight: 500;
+  border-bottom: 1px solid #ffe08244;
+}
+.winner-big {
+  color: #fff;
+  background: linear-gradient(90deg,#ffa726 0%, #ffe082 100%);
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.13em;
+  box-shadow: 0 2px 16px #ffe08299;
+  padding: 10px 0;
+  margin-bottom: 6px;
+}

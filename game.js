@@ -68,3 +68,52 @@ function placePixel(index) {
 boxes.forEach((box, idx) => {
   box.addEventListener("click", () => placePixel(idx));
 });
+function showWinner(winnerData) {
+  // winnerData = { username, reward, pixel, box }
+  document.getElementById("winner-info").innerHTML = `
+    <b>${winnerData.username || 'Người chơi'}</b> thắng <b>${winnerData.reward}</b> PIXEL<br>
+    với <b>${winnerData.pixel}</b> pixel ở ô <b>${winnerData.box + 1}</b>!
+  `;
+  document.getElementById("winner-modal").style.display = "flex";
+}
+function showWinnersModal(winners) {
+  // winners: mảng [{username, reward, pixel, box}]
+  const winnerModal = document.getElementById("winner-modal");
+  const winnerList = document.getElementById("winner-list");
+
+  if (!winners || winners.length === 0) {
+    winnerList.innerHTML = "<div style='padding:16px 0;color:#444;'>Không ai thắng ở phiên này.</div>";
+    winnerModal.style.display = "flex";
+    return;
+  }
+
+  // Xác định người thắng lớn nhất
+  let maxReward = Math.max(...winners.map(w => w.reward));
+  let html = "";
+  winners.forEach(w => {
+    let highlight = w.reward === maxReward ? " winner-big" : "";
+    html += `
+      <div class="winner-item${highlight}">
+        <b>${w.username || "Người chơi"}</b> thắng <b>${w.reward}</b> PIXEL
+        (${w.pixel} pixel ở ô <b>${(w.box + 1)}</b>)
+      </div>`;
+  });
+
+  winnerList.innerHTML = html;
+  winnerModal.style.display = "flex";
+}
+
+function fetchWinnersAndShow() {
+  fetch(API_BASE + "/session/last_result")
+    .then(res => res.json())
+    .then(data => {
+      showWinnersModal(data.winners || []);
+    });
+}
+
+// Trong hàm updateTimer:
+if (timeLeft < 0) {
+  clearInterval(countdownInterval);
+  timerEl.textContent = "⏳ Đang xử lý...";
+  setTimeout(fetchWinnersAndShow, 2500); // Chờ backend trả thưởng xong rồi lấy kết quả
+}
