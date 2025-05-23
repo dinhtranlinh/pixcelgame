@@ -1,0 +1,70 @@
+
+let timeLeft = 300;
+let timerEl = document.getElementById("timer-display");
+let totalBetEl = document.getElementById("total-bet");
+let multiplierSelect = document.getElementById("bet-multiplier");
+let totalPixel = 0;
+let pixelPlaced = {}; // key: box index, value: number of dots
+
+const boxes = document.querySelectorAll(".box");
+const userId = window.Telegram.WebApp.initDataUnsafe?.user?.id || 0;
+const API_BASE = "https://pixel.clbketnoitinhyeuonline.com";
+
+function updateTimer() {
+  let minutes = Math.floor(timeLeft / 60);
+  let seconds = timeLeft % 60;
+  timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+
+  if (timeLeft <= 30) {
+    timerEl.classList.add("big");
+  } else {
+    timerEl.classList.remove("big");
+  }
+
+  timeLeft--;
+  if (timeLeft < 0) {
+    clearInterval(countdownInterval);
+    timerEl.textContent = "⏳ Đang xử lý...";
+    // TODO: Gọi API trả thưởng
+  }
+}
+const countdownInterval = setInterval(updateTimer, 1000);
+
+function placePixel(index) {
+  if (timeLeft <= 30) return; // Ngừng đặt khi countdown cuối
+
+  const multiplier = parseInt(multiplierSelect.value);
+  const cost = multiplier; // mỗi pixel = hệ số coin
+  totalPixel += multiplier;
+  totalBetEl.textContent = totalPixel;
+
+  if (!pixelPlaced[index]) pixelPlaced[index] = 0;
+  pixelPlaced[index] += multiplier;
+
+  const dotContainer = boxes[index].querySelector(".dots");
+  for (let i = 0; i < multiplier; i++) {
+    const dot = document.createElement("div");
+    dot.classList.add("dot");
+    dotContainer.appendChild(dot);
+  }
+
+  fetch(`${API_BASE}/bet`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      telegram_id: userId,
+      box_index: index,
+      pixel: multiplier
+    }),
+  }).then(res => res.json()).then(data => {
+    if (data.new_balance !== undefined) {
+      document.getElementById("user-balance").textContent = `$${data.new_balance.toFixed(2)}`;
+    }
+  }).catch(err => {
+    console.error("Lỗi gửi cược:", err);
+  });
+}
+
+boxes.forEach((box, idx) => {
+  box.addEventListener("click", () => placePixel(idx));
+});

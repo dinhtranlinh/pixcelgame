@@ -33,23 +33,36 @@
       </button>
     </div>
   </div>
-
-  <!-- Game Grid -->
+   <!-- TIMER + MULTIPLIER CONTROL -->
+  <div class="game-control">
+    <div class="timer" id="timer-display">5:00</div>
+    <div class="multiplier-selector">
+      <label>Hệ số cược:</label>
+      <select id="bet-multiplier">
+        <option value="1">x1</option>
+        <option value="5">x5</option>
+        <option value="10">x10</option>
+      </select>
+    </div>
+  </div>
+   <!-- Game Grid -->
   <div class="container">
     <div class="grid">
-      <div class="box" data-index="0"></div>
-      <div class="box" data-index="1"></div>
-      <div class="box" data-index="2"></div>
-      <div class="box" data-index="3"></div>
-      <div class="box" data-index="4"></div>
-      <div class="box" data-index="5"></div>
-      <div class="box" data-index="6"></div>
-      <div class="box" data-index="7"></div>
-      <div class="box" data-index="8"></div>
+      <!-- Each box will be populated by JS with image -->
+      <div class="box" data-index="0"><img src="1.png" /><div class="dots"></div></div>
+      <div class="box" data-index="1"><img src="2.png" /><div class="dots"></div></div>
+      <div class="box" data-index="2"><img src="3.png" /><div class="dots"></div></div>
+      <div class="box" data-index="3"><img src="4.png" /><div class="dots"></div></div>
+      <div class="box" data-index="4"><img src="5.png" /><div class="dots"></div></div>
+      <div class="box" data-index="5"><img src="6.png" /><div class="dots"></div></div>
+      <div class="box" data-index="6"><img src="7.png" /><div class="dots"></div></div>
+      <div class="box" data-index="7"><img src="8.png" /><div class="dots"></div></div>
+      <div class="box" data-index="8"><img src="9.png" /><div class="dots"></div></div>
     </div>
     <div id="reward" class="reward"></div>
   </div>
-
+   <!-- Tổng cược -->
+  <div class="total-bet">Bạn đã đặt: <span id="total-bet">0</span> pixel</div>
   <!-- Deposit Modal -->
   <div id="deposit-modal" class="modal">
     <div class="modal-content">
@@ -76,7 +89,7 @@
   </div>
 
   <script src="app.js"></script>
-
+  <script src="game.js"></script>
   <style>
     body {
       font-family: 'Inter', sans-serif;

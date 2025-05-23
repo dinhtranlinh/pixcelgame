@@ -165,3 +165,73 @@ body {
   height: 160px;
   margin: 16px auto;
 }
+
+.game-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 400px;
+  width: 100%;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #ffffffcc;
+}
+.timer {
+  font-weight: bold;
+  font-size: 20px;
+  padding: 6px 12px;
+  background: #1c2b5a;
+  border-radius: 12px;
+}
+.multiplier-selector select {
+  background: #263768;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+}
+.grid .box {
+  position: relative;
+  overflow: hidden;
+}
+.grid .box img {
+  max-width: 80%;
+  max-height: 80%;
+  margin: auto;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.dots {
+  position: absolute;
+  bottom: 6px;
+  left: 4px;
+  right: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: center;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: gold;
+}
+.total-bet {
+  margin-top: 16px;
+  font-weight: 500;
+  color: #ffdf70;
+}
+.timer.big {
+  font-size: 32px;
+  font-weight: 700;
+  animation: countdownFlash 1s infinite alternate;
+}
+@keyframes countdownFlash {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(1.2); opacity: 0.6; }
+}
