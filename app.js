@@ -10,7 +10,7 @@ const rewardBox = document.getElementById("reward");
 const boxes = document.querySelectorAll(".box");
 const openedBoxes = new Set();
 
-const API_BASE = "http://your-backend-domain-or-ip:8000";
+const API_BASE = "https://pixel.clbketnoitinhyeuonline.com";
 
 if (user) {
   userInfo.textContent = `Chào ${user.username || user.first_name}`;
