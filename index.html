@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pixel Mystery Box</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -52,10 +53,13 @@
   <!-- Deposit Modal -->
   <div id="deposit-modal" class="modal">
     <div class="modal-content">
-      <h3>Deposit PIXEL</h3>
+      <h3 style="font-weight: 600; font-size: 18px;">Deposit PIXEL</h3>
       <img src="qr-code.jpg" alt="QR Code" class="qr" />
-      <p id="wallet-address">0x75De1eb4c437afE3fCfd162F25c48Ad4D17C9948</p>
-      <button onclick="copyAddress()">Copy địa chỉ ví</button>
+      <div class="wallet-address-wrapper">
+        <div class="wallet-label">Your Address</div>
+        <div id="wallet-address">0x75De1eb4c437afE3fCfd162F25c48Ad4D17C9948</div>
+      </div>
+      <button onclick="copyAddress()" class="highlight-button">Copy Address</button>
       <button class="close-btn" onclick="closeModal('deposit-modal')">Close</button>
     </div>
   </div>
@@ -63,14 +67,73 @@
   <!-- Send Modal -->
   <div id="send-modal" class="modal">
     <div class="modal-content">
-      <h3>Send PIXEL</h3>
-      <input type="text" id="send-address" placeholder="Địa chỉ ví nhận" />
-      <input type="number" id="send-amount" placeholder="Số điểm rút" />
-      <button onclick="sendCoin()">Send</button>
+      <h3 style="font-weight: 600; font-size: 18px;">Send PIXEL</h3>
+      <input type="text" id="send-address" class="input-ronin" placeholder="Recipient Address" />
+      <input type="number" id="send-amount" class="input-ronin" placeholder="Amount" />
+      <button onclick="sendCoin()" class="highlight-button">Send</button>
       <button class="close-btn" onclick="closeModal('send-modal')">Close</button>
     </div>
   </div>
 
   <script src="app.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .wallet-address-wrapper {
+      background-color: #131c32;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      font-size: 14px;
+      text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+    }
+    .wallet-label {
+      font-weight: 500;
+      color: #a0aec0;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+    #wallet-address {
+      word-break: break-all;
+      line-height: 1.4;
+      color: #e0e6ed;
+      font-weight: 500;
+    }
+    .highlight-button {
+      background-color: #3c5be8;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      color: white;
+      font-weight: 500;
+      font-size: 15px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .highlight-button:hover {
+      background-color: #5673f0;
+    }
+    .input-ronin {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+      transition: border 0.2s ease;
+    }
+    .input-ronin:focus {
+      border-color: #3c5be8;
+      outline: none;
+    }
+  </style>
 </body>
 </html>
