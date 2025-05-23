@@ -53,9 +53,9 @@
   <div id="deposit-modal" class="modal">
     <div class="modal-content">
       <h3>Deposit PIXEL</h3>
-      <img src="your-qr-code.png" alt="QR Code" class="qr" />
-      <p id="wallet-address">ronin:yourwalletaddress</p>
-      <button onclick="copyAddress()">Copy Address</button>
+      <img src="qr-code.jpg" alt="QR Code" class="qr" />
+      <p id="wallet-address">0x75De1eb4c437afE3fCfd162F25c48Ad4D17C9948</p>
+      <button onclick="copyAddress()">Copy địa chỉ ví</button>
       <button class="close-btn" onclick="closeModal('deposit-modal')">Close</button>
     </div>
   </div>
@@ -64,8 +64,8 @@
   <div id="send-modal" class="modal">
     <div class="modal-content">
       <h3>Send PIXEL</h3>
-      <input type="text" id="send-address" placeholder="Recipient Address" />
-      <input type="number" id="send-amount" placeholder="Amount" />
+      <input type="text" id="send-address" placeholder="Địa chỉ ví nhận" />
+      <input type="number" id="send-amount" placeholder="Số điểm rút" />
       <button onclick="sendCoin()">Send</button>
       <button class="close-btn" onclick="closeModal('send-modal')">Close</button>
     </div>
