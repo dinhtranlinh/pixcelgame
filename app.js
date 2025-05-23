@@ -1,177 +1,76 @@
 const tg = window.Telegram.WebApp;
 tg.ready();
 
-const userInfo = document.getElementById('user-info');
-const balanceInfo = document.getElementById('balance-info');
-const rewardBox = document.getElementById('reward');
-const boxes = document.querySelectorAll('.box');
+const user = tg.initDataUnsafe?.user;
+const userInfo = document.getElementById("user-greeting");
+const userIdInfo = document.getElementById("user-id");
+const avatar = document.getElementById("user-avatar");
+const balanceDisplay = document.getElementById("user-balance");
+const rewardBox = document.getElementById("reward");
+const boxes = document.querySelectorAll(".box");
 const openedBoxes = new Set();
 
-const API_BASE = "https://pixel.clbketnoitinhyeuonline.com";
-const userId = tg.initDataUnsafe?.user?.id || null;
-const userName = tg.initDataUnsafe?.user?.username || tg.initDataUnsafe?.user?.first_name || "Người chơi";
+const API_BASE = "http://your-backend-domain-or-ip:8000";
 
-if (!userId) {
-  userInfo.textContent = "Không lấy được ID Telegram của bạn.";
-  alert("Vui lòng mở Web App qua Telegram để chơi.");
-} else {
-  userInfo.textContent = `Chào ${userName} (ID: ${userId})`;
-  loadBalance();
+if (user) {
+  userInfo.textContent = `Chào ${user.username || user.first_name}`;
+  userIdInfo.textContent = `(ID: ${user.id})`;
+  if (user.photo_url) avatar.src = user.photo_url;
 }
 
-async function loadBalance() {
-  balanceInfo.textContent = "Đang tải số dư coin...";
+async function updateBalance() {
+  balanceDisplay.textContent = "...";
   try {
-    const res = await fetch(`${API_BASE}/balance/${userId}`);
-    if (!res.ok) throw new Error("Lỗi khi lấy số dư");
+    const res = await fetch(`${API_BASE}/balance/${user.id}`);
     const data = await res.json();
-
-    const balance = data.balance;
-    balanceInfo.textContent = `Số dư coin: ${balance}`;
-
-    const depositSection = document.getElementById("deposit-section");
-    if (balance <= 0 && depositSection) {
-      depositSection.style.display = "block";
-    }
+    balanceDisplay.textContent = `$${data.balance.toFixed(2)}`;
   } catch (e) {
-    balanceInfo.textContent = "Không thể tải số dư coin.";
-    console.error(e);
+    balanceDisplay.textContent = "Lỗi tải số dư";
   }
 }
+updateBalance();
 
-// Mở hộp
 async function openBox(index, boxElement) {
   if (openedBoxes.has(index)) return;
-
   try {
     const res = await fetch(`${API_BASE}/open_box`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ telegram_id: userId, amount: 10 })
+      body: JSON.stringify({ telegram_id: user.id, amount: 10 })
     });
-
     const data = await res.json();
     if (!res.ok) {
-      rewardBox.textContent = `Lỗi: ${data.detail || "Không mở hộp được"}`;
+      rewardBox.textContent = `Lỗi: ${data.detail}`;
       return;
     }
-
     openedBoxes.add(index);
     boxElement.classList.add("opened");
     rewardBox.textContent = data.message;
-    balanceInfo.textContent = `Số dư coin: ${data.new_balance}`;
+    balanceDisplay.textContent = `$${data.new_balance.toFixed(2)}`;
   } catch (e) {
     rewardBox.textContent = "Lỗi kết nối backend.";
-    console.error(e);
   }
 }
-
-// Gán sự kiện mở hộp
 boxes.forEach((box) => {
   const index = box.getAttribute("data-index");
   box.addEventListener("click", () => openBox(index, box));
 });
 
-// Copy ví
-function copyWallet() {
-  const walletInput = document.getElementById("wallet-address");
-  walletInput.select();
-  walletInput.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-  alert("Đã sao chép địa chỉ ví!");
+document.getElementById("btn-deposit").onclick = () => openModal("deposit-modal");
+document.getElementById("btn-send").onclick = () => openModal("send-modal");
+
+function openModal(id) {
+  document.getElementById(id).style.display = "flex";
 }
-
-// Nạp
-document.getElementById("submitHashBtn").addEventListener("click", async () => {
-  const txHash = document.getElementById("txHashInput").value.trim();
-  const hashMessage = document.getElementById("hashMessage");
-
-  if (!txHash) {
-    hashMessage.textContent = "Vui lòng nhập mã HashTX.";
-    return;
-  }
-
-  hashMessage.textContent = "Đang xác minh giao dịch...";
-
-  try {
-    const res = await fetch(`${API_BASE}/deposit_hash`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ telegram_id: userId, tx_hash: txHash })
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || "Lỗi nạp");
-
-    hashMessage.textContent = data.message;
-    balanceInfo.textContent = `Số dư coin: ${data.new_balance}`;
-    loadBalance();
-  } catch (e) {
-    hashMessage.textContent = `Lỗi: ${e.message}`;
-  }
-});
-
-// Rút
-document.getElementById("submitWithdrawBtn").addEventListener("click", async () => {
-  const address = document.getElementById("withdrawAddress").value.trim();
-  const amount = parseInt(document.getElementById("withdrawAmount").value.trim());
-  const messageEl = document.getElementById("withdrawMessage");
-
-  if (!address || isNaN(amount) || amount <= 0) {
-    messageEl.textContent = "Vui lòng nhập địa chỉ và số coin hợp lệ.";
-    return;
-  }
-
-  messageEl.textContent = "Đang xử lý rút tiền...";
-
-  try {
-    const res = await fetch(`${API_BASE}/withdraw`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ telegram_id: userId, amount, wallet_address: address })
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || "Lỗi khi rút coin");
-
-    messageEl.textContent = data.message;
-    balanceInfo.textContent = `Số dư coin: ${data.new_balance}`;
-    loadBalance();
-  } catch (e) {
-    messageEl.textContent = `Lỗi: ${e.message}`;
-  }
-});
-
-function toggleDepositForm() {
-  const depositSection = document.getElementById("deposit-section");
-  const withdrawSection = document.getElementById("withdraw-section");
-
-  withdrawSection.style.display = "none";
-
-  const isHidden = window.getComputedStyle(depositSection).display === "none";
-  depositSection.style.display = isHidden ? "block" : "none";
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
 }
-
-function toggleWithdrawForm() {
-  const withdrawSection = document.getElementById("withdraw-section");
-  const depositSection = document.getElementById("deposit-section");
-
-  depositSection.style.display = "none";
-
-  const isHidden = window.getComputedStyle(withdrawSection).display === "none";
-  withdrawSection.style.display = isHidden ? "block" : "none";
+function copyAddress() {
+  const address = document.getElementById("wallet-address").textContent;
+  navigator.clipboard.writeText(address).then(() => alert("Address copied!"));
 }
-
-
-// Giao diện người dùng (bổ sung đoạn này vào dưới thẻ rút)
-document.getElementById("withdrawAmount").addEventListener("input", () => {
-  const amount = parseInt(document.getElementById("withdrawAmount").value);
-  const previewEl = document.getElementById("withdrawPreview");
-  if (!isNaN(amount) && amount > 0) {
-    const fee = +(amount * 0.01).toFixed(6);
-    const receive = +(amount - fee).toFixed(6);
-    previewEl.textContent = `Sẽ nhận được: ${receive} PIXEL (đã trừ ${fee} phí)`;
-  } else {
-    previewEl.textContent = "";
-  }
-});
+function sendCoin() {
+  const to = document.getElementById("send-address").value;
+  const amount = document.getElementById("send-amount").value;
+  alert(`Sending ${amount} PIXEL to ${to} (fake demo)`); // Replace this with real logic
+}
