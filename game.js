@@ -1,5 +1,4 @@
 
-let timeLeft = 300;
 let timerEl = document.getElementById("timer-display");
 let totalBetEl = document.getElementById("total-bet");
 let multiplierSelect = document.getElementById("bet-multiplier");
@@ -10,40 +9,82 @@ const boxes = document.querySelectorAll(".box");
 const userId = window.Telegram.WebApp.initDataUnsafe?.user?.id || 0;
 const API_BASE = "https://pixel.clbketnoitinhyeuonline.com";
 
+window.timeLeft = 300; // Sẽ được cập nhật sau khi lấy từ backend
+// Lấy timer phiên hiện tại từ backend
+fetch(API_BASE + "/session/current")
+  .then(res => res.json())
+  .then(data => {
+    if (data && data.start_time) {
+      let serverStart = new Date(data.start_time); // ISO
+      let now = new Date();
+      let secondsPassed = Math.floor((now - serverStart) / 1000);
+      let timeLeft = 300 - secondsPassed;
+      if (timeLeft < 0) timeLeft = 0;
+      window.timeLeft = timeLeft;
+
+      // Nếu đã có interval cũ thì clear
+      if (window.countdownInterval) clearInterval(window.countdownInterval);
+      window.countdownInterval = setInterval(updateTimer, 1000);
+    } else {
+      // Không lấy được dữ liệu phiên thì fallback về 300
+      window.timeLeft = 300;
+      window.countdownInterval = setInterval(updateTimer, 1000);
+    }
+  })
+  .catch(() => {
+    // Khi lỗi API, fallback về 300
+    window.timeLeft = 300;
+    window.countdownInterval = setInterval(updateTimer, 1000);
+  });
+
+
 function updateTimer() {
-  let minutes = Math.floor(timeLeft / 60);
-  let seconds = timeLeft % 60;
+  let minutes = Math.floor(window.timeLeft / 60);
+  let seconds = window.timeLeft % 60;
   timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
-  if (timeLeft <= 30) {
-    timerEl.classList.add("big");
-  } else {
-    timerEl.classList.remove("big");
+  // Hiệu ứng màu và rung cho timer
+  timerEl.classList.remove("big", "warning", "shake");
+  if (window.timeLeft <= 30 && window.timeLeft > 10) {
+    timerEl.classList.add("warning");
+  } else if (window.timeLeft <= 10 && window.timeLeft > 0) {
+    timerEl.classList.add("warning", "shake");
   }
 
-  timeLeft--;
-  if (timeLeft < 0) {
-  clearInterval(countdownInterval);
-  timerEl.textContent = "⏳ Đang xử lý...";
-  setTimeout(() => {
-    fetchWinnersAndShow();
-    // Reset giao diện cho phiên mới
-    boxes.forEach(box => box.querySelector(".dots").innerHTML = "");
-    totalPixel = 0;
-    totalBetEl.textContent = "0";
-    pixelPlaced = {};
-    if (typeof updateBalance === "function") updateBalance();
-    // Reset lại timer cho phiên tiếp theo:
-    timeLeft = 300;
-    countdownInterval = setInterval(updateTimer, 1000);
-  }, 2500);
+  window.timeLeft--;
+  if (window.timeLeft < 0) {
+    clearInterval(window.countdownInterval);
+    timerEl.textContent = "⏳ Đang xử lý...";
+    timerEl.classList.remove("warning", "shake", "big");
+    setTimeout(() => {
+      fetchWinnersAndShow();
+      // Reset giao diện cho phiên mới
+      boxes.forEach(box => box.querySelector(".dots").innerHTML = "");
+      totalPixel = 0;
+      totalBetEl.textContent = "0";
+      pixelPlaced = {};
+      if (typeof updateBalance === "function") updateBalance();
+      // Lấy phiên mới từ backend!
+      fetch(API_BASE + "/session/current")
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.start_time) {
+            let serverStart = new Date(data.start_time);
+            let now = new Date();
+            let secondsPassed = Math.floor((now - serverStart) / 1000);
+            let timeLeft = 300 - secondsPassed;
+            if (timeLeft < 0) timeLeft = 0;
+            window.timeLeft = timeLeft;
+            window.countdownInterval = setInterval(updateTimer, 1000);
+          }
+        });
+    }, 2500);
+  }
 }
 
-}
-const countdownInterval = setInterval(updateTimer, 1000);
 
 function placePixel(index) {
-  if (timeLeft <= 30) return; // Ngừng đặt khi countdown cuối
+  if (window.timeLeft <= 30) return; // Ngừng đặt khi countdown cuối
 
   const multiplier = parseInt(multiplierSelect.value);
   const cost = multiplier; // mỗi pixel = hệ số coin
@@ -123,9 +164,3 @@ function fetchWinnersAndShow() {
     });
 }
 
-// Trong hàm updateTimer:
-if (timeLeft < 0) {
-  clearInterval(countdownInterval);
-  timerEl.textContent = "⏳ Đang xử lý...";
-  setTimeout(fetchWinnersAndShow, 2500); // Chờ backend trả thưởng xong rồi lấy kết quả
-}

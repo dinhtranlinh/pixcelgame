@@ -270,3 +270,39 @@ body {
   padding: 10px 0;
   margin-bottom: 6px;
 }
+.dot {
+  width: 6px; height: 6px; border-radius: 50%; background: gold; margin:1px;
+}
+/* Hiệu ứng timer sắp hết giờ */
+.timer.warning {
+  background: linear-gradient(90deg, #f44336 0%, #ff9800 100%);
+  color: #fff;
+  animation: timerFlash 0.6s infinite alternate;
+  border: 2px solid #ff9800;
+  box-shadow: 0 0 16px 4px #ff9800cc, 0 0 32px 2px #f4433677;
+}
+@keyframes timerFlash {
+  from {
+    transform: scale(1.05) rotate(-1deg);
+    text-shadow: 0 0 16px #f44336, 0 0 6px #ff9800;
+    filter: brightness(1.05);
+  }
+  to {
+    transform: scale(1.25) rotate(1deg);
+    text-shadow: 0 0 30px #ff9800, 0 0 12px #fff59d;
+    filter: brightness(1.2);
+  }
+}
+
+/* Hiệu ứng shake ở 10 giây cuối */
+.timer.shake {
+  animation: timerFlash 0.5s infinite alternate, shakeX 0.17s 7;
+}
+@keyframes shakeX {
+  0% { transform: translateX(0) scale(1.1);}
+  15% { transform: translateX(-6px) scale(1.12);}
+  35% { transform: translateX(7px) scale(1.2);}
+  55% { transform: translateX(-8px) scale(1.15);}
+  75% { transform: translateX(5px) scale(1.15);}
+  100% { transform: translateX(0) scale(1.1);}
+}
