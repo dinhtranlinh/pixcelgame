@@ -1,4 +1,3 @@
-
 let timerEl = document.getElementById("timer-display");
 let totalBetEl = document.getElementById("total-bet");
 let multiplierSelect = document.getElementById("bet-multiplier");
@@ -36,7 +35,6 @@ fetch(API_BASE + "/session/current")
     window.countdownInterval = setInterval(updateTimer, 1000);
   });
 
-
 function updateTimer() {
   let minutes = Math.floor(window.timeLeft / 60);
   let seconds = window.timeLeft % 60;
@@ -52,43 +50,42 @@ function updateTimer() {
 
   window.timeLeft--;
   if (window.timeLeft < 0) {
-  clearInterval(window.countdownInterval);
-  timerEl.textContent = "⏳ Đang xử lý...";
-  timerEl.classList.remove("warning", "shake", "big");
-  // Show popup winner, reset UI
-  fetchWinnersAndShow();
-  boxes.forEach(box => box.querySelector(".dots").innerHTML = "");
-  totalPixel = 0;
-  totalBetEl.textContent = "0";
-  pixelPlaced = {};
-  if (typeof updateBalance === "function") updateBalance();
+    clearInterval(window.countdownInterval);
+    timerEl.textContent = "⏳ Đang xử lý...";
+    timerEl.classList.remove("warning", "shake", "big");
+    // Show popup winner, reset UI
+    fetchWinnersAndShow();
+    boxes.forEach(box => box.querySelector(".dots").innerHTML = "");
+    totalPixel = 0;
+    totalBetEl.textContent = "0";
+    pixelPlaced = {};
+    if (typeof updateBalance === "function") updateBalance();
 
-  // Hàm lặp kiểm tra phiên mới
-  function waitForNewSession(retry = 0) {
-    fetch(API_BASE + "/session/current")
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.start_time) {
-          let serverStart = new Date(data.start_time);
-          let now = new Date();
-          let secondsPassed = Math.floor((now - serverStart) / 1000);
-          let timeLeft = 300 - secondsPassed;
-          // Nếu vừa reset thì start_time phải lệch ít nhất 5s, hoặc timeLeft gần 300 mới đúng phiên mới!
-          if (timeLeft > 295 || retry > 7) {
-            window.timeLeft = timeLeft;
-            window.countdownInterval = setInterval(updateTimer, 1000);
-            timerEl.textContent = `${Math.floor(window.timeLeft/60)}:${(window.timeLeft%60).toString().padStart(2,"0")}`;
-          } else {
-            setTimeout(()=>waitForNewSession(retry+1), 800); // thử lại sau 0.8s
+    // Hàm lặp kiểm tra phiên mới
+    function waitForNewSession(retry = 0) {
+      fetch(API_BASE + "/session/current")
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.start_time) {
+            let serverStart = new Date(data.start_time);
+            let now = new Date();
+            let secondsPassed = Math.floor((now - serverStart) / 1000);
+            let timeLeft = 300 - secondsPassed;
+            // Nếu vừa reset thì start_time phải lệch ít nhất 5s, hoặc timeLeft gần 300 mới đúng phiên mới!
+            if (timeLeft > 295 || retry > 7) {
+              window.timeLeft = timeLeft;
+              window.countdownInterval = setInterval(updateTimer, 1000);
+              timerEl.textContent = `${Math.floor(window.timeLeft/60)}:${(window.timeLeft%60).toString().padStart(2,"0")}`;
+            } else {
+              setTimeout(()=>waitForNewSession(retry+1), 800); // thử lại sau 0.8s
+            }
           }
-        }
-      })
-      .catch(()=>setTimeout(()=>waitForNewSession(retry+1), 800));
+        })
+        .catch(()=>setTimeout(()=>waitForNewSession(retry+1), 800));
+    }
+    setTimeout(()=>waitForNewSession(0), 2500); // Đợi backend xử lý xong mới fetch phiên mới
   }
-  setTimeout(()=>waitForNewSession(0), 2500); // Đợi backend xử lý xong mới fetch phiên mới
 }
-
-
 
 function placePixel(index) {
   if (window.timeLeft <= 30) return; // Ngừng đặt khi countdown cuối
@@ -128,14 +125,7 @@ function placePixel(index) {
 boxes.forEach((box, idx) => {
   box.addEventListener("click", () => placePixel(idx));
 });
-function showWinner(winnerData) {
-  // winnerData = { username, reward, pixel, box }
-  document.getElementById("winner-info").innerHTML = `
-    <b>${winnerData.username || 'Người chơi'}</b> thắng <b>${winnerData.reward}</b> PIXEL<br>
-    với <b>${winnerData.pixel}</b> pixel ở ô <b>${winnerData.box + 1}</b>!
-  `;
-  document.getElementById("winner-modal").style.display = "flex";
-}
+
 function showWinnersModal(winners) {
   const winnerModal = document.getElementById("winner-modal");
   const winnerList = document.getElementById("winner-list");
@@ -158,7 +148,6 @@ function showWinnersModal(winners) {
   winnerList.innerHTML = html;
   winnerModal.style.display = "flex";
 }
-}
 
 function fetchWinnersAndShow() {
   fetch(API_BASE + "/session/last_result")
@@ -167,4 +156,3 @@ function fetchWinnersAndShow() {
       showWinnersModal(data.winners || []);
     });
 }
-
