@@ -7,7 +7,6 @@ let pixelPlaced = {}; // key: box index, value: number of dots
 
 const boxes = document.querySelectorAll(".box");
 const userId = window.Telegram.WebApp.initDataUnsafe?.user?.id || 0;
-const API_BASE = "https://pixel.clbketnoitinhyeuonline.com";
 
 window.timeLeft = 300; // Sẽ được cập nhật sau khi lấy từ backend
 // Lấy timer phiên hiện tại từ backend

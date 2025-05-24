@@ -30,10 +30,7 @@ async function updateBalance() {
 updateBalance();
 
 
-boxes.forEach((box) => {
-  const index = box.getAttribute("data-index");
-  box.addEventListener("click", () => openBox(index, box));
-});
+
 
 document.getElementById("btn-deposit").onclick = () => openModal("deposit-modal");
 document.getElementById("btn-send").onclick = () => openModal("send-modal");
