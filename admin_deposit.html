@@ -1,23 +1,73 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8" />
   <title>Admin Nạp Coin Test</title>
   <style>
-    body { font-family: 'Inter',sans-serif; background:#111e36; color:#fff; padding:40px }
-    .panel { background:#232b47; border-radius:12px; padding:32px 24px; max-width:360px; margin:0 auto }
-    h2 { color: #ffef70; text-align:center; }
-    label { display:block; margin-top:18px; }
-    input[type="text"], input[type="number"] {
-      width:100%; padding:10px; margin:8px 0; border-radius:7px; border:1px solid #3a4a73;
-      background: #182345; color:#fff; font-size:15px; box-sizing:border-box;
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #111e36;
+      color: #fff;
+      padding: 40px
     }
-    button { margin-top:18px; width:100%; padding:12px; background:#3c5be8; color:#fff; font-weight:600;
-      border:none; border-radius:8px; font-size:16px; cursor:pointer; }
-    button:hover { background:#5f77f7; }
-    #result { margin-top:20px; text-align:center; color: #ffef70; }
+
+    .panel {
+      background: #232b47;
+      border-radius: 12px;
+      padding: 32px 24px;
+      max-width: 360px;
+      margin: 0 auto
+    }
+
+    h2 {
+      color: #ffef70;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 7px;
+      border: 1px solid #3a4a73;
+      background: #182345;
+      color: #fff;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 18px;
+      width: 100%;
+      padding: 12px;
+      background: #3c5be8;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #5f77f7;
+    }
+
+    #result {
+      margin-top: 20px;
+      text-align: center;
+      color: #ffef70;
+    }
   </style>
 </head>
+
 <body>
   <div class="panel">
     <h2>Admin Nạp Coin Test</h2>
@@ -28,6 +78,12 @@
     <button onclick="deposit()">Nạp ngay</button>
     <div id="result"></div>
   </div>
+  <div class="panel" style="margin-top:36px;">
+    <h2>Test Đếm Ngược Phiên</h2>
+    <div style="font-size:26px;margin:18px 0;" id="test-timer">...</div>
+    <button onclick="reloadSession()">Lấy lại phiên & timer</button>
+  </div>
+
   <script>
     const API_BASE = "https://pixel.clbketnoitinhyeuonline.com"; // Đổi thành API thật của bạn nếu khác
     function deposit() {
@@ -39,22 +95,61 @@
       }
       fetch(API_BASE + "/deposit", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({telegram_id: Number(tgid), amount: amount})
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ telegram_id: Number(tgid), amount: amount })
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.new_balance !== undefined) {
-          document.getElementById('result').textContent =
-            "✅ Đã nạp thành công! Số dư mới: " + data.new_balance;
-        } else {
-          document.getElementById('result').textContent = "❌ " + (data.detail || JSON.stringify(data));
-        }
-      })
-      .catch(err => {
-        document.getElementById('result').textContent = "Lỗi: " + err;
-      });
+        .then(res => res.json())
+        .then(data => {
+          if (data.new_balance !== undefined) {
+            document.getElementById('result').textContent =
+              "✅ Đã nạp thành công! Số dư mới: " + data.new_balance;
+          } else {
+            document.getElementById('result').textContent = "❌ " + (data.detail || JSON.stringify(data));
+          }
+        })
+        .catch(err => {
+          document.getElementById('result').textContent = "Lỗi: " + err;
+        });
     }
+    let timerInterval = null;
+    let timerLeft = 300;
+    function showTestTimer() {
+      let m = Math.floor(timerLeft / 60);
+      let s = (timerLeft % 60).toString().padStart(2, '0');
+      document.getElementById("test-timer").textContent = `${m}:${s}`;
+      timerLeft--;
+      if (timerLeft < 0) {
+        clearInterval(timerInterval);
+        document.getElementById("test-timer").textContent = "⏳ Đang xử lý...";
+      }
+    }
+
+    function reloadSession() {
+      fetch(API_BASE + "/session/current")
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.start_time) {
+            let serverStart = new Date(data.start_time);
+            let now = new Date();
+            let secondsPassed = Math.floor((now - serverStart) / 1000);
+            timerLeft = 300 - secondsPassed;
+            if (timerLeft < 0) timerLeft = 0;
+            if (timerInterval) clearInterval(timerInterval);
+            showTestTimer();
+            timerInterval = setInterval(showTestTimer, 1000);
+            console.log("[DEBUG] Phiên:", data.session_id, "Start:", data.start_time, "Time left:", timerLeft);
+          } else {
+            document.getElementById("test-timer").textContent = "Không lấy được phiên!";
+          }
+        })
+        .catch(err => {
+          document.getElementById("test-timer").textContent = "Lỗi: " + err;
+          console.error("[DEBUG] Lỗi lấy phiên:", err);
+        });
+    }
+    // Tự động khởi động timer khi load trang
+    reloadSession();
   </script>
 </body>
+
 </html>

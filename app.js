@@ -7,7 +7,6 @@ const userIdInfo = document.getElementById("user-id");
 const avatar = document.getElementById("user-avatar");
 const balanceDisplay = document.getElementById("user-balance");
 const rewardBox = document.getElementById("reward");
-const boxes = document.querySelectorAll(".box");
 const openedBoxes = new Set();
 
 const API_BASE = "https://pixel.clbketnoitinhyeuonline.com";
