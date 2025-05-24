@@ -158,22 +158,6 @@ function showWinnersModal(winners) {
   winnerList.innerHTML = html;
   winnerModal.style.display = "flex";
 }
-
-
-  // Xác định người thắng lớn nhất
-  let maxReward = Math.max(...winners.map(w => w.reward));
-  let html = "";
-  winners.forEach(w => {
-    let highlight = w.reward === maxReward ? " winner-big" : "";
-    html += `
-      <div class="winner-item${highlight}">
-        <b>${w.username || "Người chơi"}</b> thắng <b>${w.reward}</b> PIXEL
-        (${w.pixel} pixel ở ô <b>${(w.box + 1)}</b>)
-      </div>`;
-  });
-
-  winnerList.innerHTML = html;
-  winnerModal.style.display = "flex";
 }
 
 function fetchWinnersAndShow() {
